@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+		<head>
+		<style>
+				.progressbox {
+					width : 128px;
+					background-color : black;
+					height : 64px;
+					overflow : hidden;
+					margin : 1px;
+				}
+				
+				.progressbox .lead {
+					display : inline-block;
+					width   : 2px;
+					height  : 101%;
+					background-color: black;
+				}
+
+				.progressbox .graphUnit {
+				    display: -moz-inline-stack;
+					display : inline-block;
+					width : 5px;
+					height : 1%;
+					background-color: yellow;
+					margin-right: 2px;
+					padding: 0;
+				}
+
+				.ulinebox {
+				
+				}
+
+				.ulinebox .lead {
+					display : inline-block;
+					width : 1px;
+					height : 100%;
+					background-color: white;
+				}
+
+				.ulinebox .unit {
+					display : inline-block;
+					width : 2px;
+					height : 2px;
+					margin-bottom: 3px;
+					background-color: black;
+				}
+
+				body {
+					color : white;
+					background-color: #545454;
+				}
+
+				.let {
+					border : 1px solid gray;
+					padding : 5px;
+					margin : 2px;
+				}
+		</style>
+		<script>
+			function init() {
+				debug("Please do nothing while callibration takes place");
+
+				progress.build();
+				timer.callibrate(function(){
+					var debugbox = document.getElementById("debug");
+					debugbox.style.display = "none";
+
+					var node = document.getElementById("controls");
+					node.style.display = "block";
+				});
+				uline.setbin( document.getElementById("dumpbin") );
+			}
+
+			function monitor_switch(node) {
+					var is = monitor_switch.started
+					if (is) {
+							timer_switch( document.getElementById("timer_button") );
+							progress.stop();
+							node.innerHTML = "Start";
+							monitor_switch.started = false;
+					} else {
+							progress.collect();
+							timer_switch(document.getElementById("timer_button"));
+							node.innerHTML = "Stop";
+							monitor_switch.started = true;
+					}
+			}
+
+			function timer_switch( node ) {
+					var is = timer_switch.started;
+					if (is) {
+							timer.stop();
+							node.innerHTML = "Start";
+							timer_switch.started = false;
+					} else {
+						var sec = document.getElementById("timer_sec");
+						if (isNaN(sec)) {
+							timer.collect();                                               
+						} else {
+							timer.collect(Number(sec), function() {
+								timer_switch( node );
+							});
+						}
+
+						node.innerHTML = "Stop";
+						timer_switch.started = true;
+					}
+			}
+
+			function flashback_switch(node) {
+				var is = flashback_switch.started;
+				if (is) {
+					timer_switch( document.getElementById("timer_button") );
+					flashback.collect();
+				} else {
+					flashback.stop();
+					timer_switch( document.getElementById("timer_button") );
+				}
+
+				// start timer
+				// start flashback	
+			}
+
+			function do_intercept() {
+					var code = document.getElementById("code");
+					eval( code.value );
+			}
+
+			function do_nothing() {
+					var date = (+new Date());
+			}
+
+		</script>
+		</head>
+
+		<body onload="init()">
+
+			<div id="controls" style="display:none">
+
+				<div class="let" style="float:left;">
+					<!-- Monitor should be always above antything, 
+					because irefox bug with height=2% 
+					-->
+					<div id="progressbox"></div>
+					<div style="margin:2px">Monitor: <button onclick="monitor_switch( this )">Start</button></div>
+				</div>
+
+				<div  style="float:left;">
+					<div class="let">
+						Timer : 
+						<button onclick="timer_switch( this )" id="timer_button">Start</button>
+						<button onclick="timer.callibrate()">ReCallibrate</button>
+						<input type="text" id="timer_sec" maxlength="2" style="width:30px"/>
+					</div>
+					<div class="let">
+						Ussage dump :
+						<button onclick="uline.dump(stack)">Dump stack</button>
+						<button onclick="uline.clear(stack)">Clear</button>
+					</div>
+					<div class="let">
+						Flashback tool :
+						<button onclick="flashback_switch( this )">Start</button>
+						<button onclick="flashback.dump()">Analyse</button>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+
+				<div class="let">
+					Dump-bin : <br/>
+					<div id="dumpbin"></div>
+				</div>
+
+				<div class="let">
+					Interception code : <br/>
+					<textarea id="code" style="width:100%" cols="35" rows="7"> var arr = [];
+
+for (var i=0;i<6099;i++) {
+	var div = document.createElement("div");
+	arr.push( div );
+	}</textarea> 
+<br/>
+					<button onclick="do_intercept()">Execute</button>
+					<button onclick="do_nothing()">Do nothing</button>
+					<input type="text" value="dummy input"/>
+				</div>
+
+			</div>
+			<div id="debug"></div>
+
+			<script src="progress.js"></script>
+			<script src="timer.js"></script>
+			<script src="uline.js"></script>
+			<script src="flashback.js"></script>
+			<script src="popup.js"></script>
+		</body>
+</html>
