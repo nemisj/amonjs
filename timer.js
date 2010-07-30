@@ -96,13 +96,20 @@ timer = (typeof timer == "undefined") ? (function(){
         if (started) { return; }
 
         started = true;
-        stack = [];
 
         var counter = 0;
 
         if (sec) {
             // limited version
             var sum = sec * 1000;
+
+            var nr = ~~(sum / (topline ? topline : 1));
+
+            // allocating approx number of items in array
+            // not to load CPU with dynamic arrray
+            stack = new Array(nr);
+
+            var i = 0;
             (function() {
 
                 var scope = arguments.callee;
@@ -114,12 +121,20 @@ timer = (typeof timer == "undefined") ? (function(){
 
                     counter += offset;
 
-                    stack.push( offset );
+                    stack[i++] = ( offset );
 
                     if (counter < sum) {
                         scope();
                     } else {
                         timer.stop();
+                        // cleaning the rest
+                        while(stack.length) {
+                            if (stack[stack.length-1] != null) {
+                                break;
+                            }
+                            stack.pop();
+                        }
+
                         if (callback) { 
                             callback();
                         } 
@@ -127,6 +142,7 @@ timer = (typeof timer == "undefined") ? (function(){
                 },0);
             })();
         } else {
+            stack = [];
             (function scope() {
                 var s = (+new Date());
                 if (started) {
