@@ -70,6 +70,9 @@
 					node.style.display = "block";
 				});
 				uline.setbin( document.getElementById("dumpbin") );
+
+				window.do_nothing_button = document.getElementById("do_nothing_button");
+				do_nothing_button.addEventListener("click", do_nothing, false );
 			}
 
 			function monitor_switch(node) {
@@ -94,17 +97,18 @@
 							node.innerHTML = "Start";
 							timer_switch.started = false;
 					} else {
-						var sec = document.getElementById("timer_sec");
+						var sec = document.getElementById("timer_sec").value;
 						if (isNaN(sec)) {
 							timer.collect();                                               
+							node.innerHTML = "Stop";
+							timer_switch.started = true;
 						} else {
+						    node.innerHTML = "No stop";
+						    timer_switch.started = true;
 							timer.collect(Number(sec), function() {
 								timer_switch( node );
 							});
 						}
-
-						node.innerHTML = "Stop";
-						timer_switch.started = true;
 					}
 			}
 
@@ -128,7 +132,7 @@
 			}
 
 			function do_nothing() {
-					var date = (+new Date());
+				do_nothing_button.innerHTML = do_nothing_button.innerHTML == "do something" ? "Do nothing" : "do something";
 			}
 
 		</script>
@@ -181,8 +185,10 @@ for (var i=0;i<6099;i++) {
 	}</textarea> 
 <br/>
 					<button onclick="do_intercept()">Execute</button>
-					<button onclick="do_nothing()">Do nothing</button>
+					<button id="do_nothing_button">Do nothing</button>
 					<input type="text" value="dummy input"/>
+					<input type="checkbox" name="some_name"/> One
+
 				</div>
 
 			</div>
