@@ -57,11 +57,29 @@
 					margin : 2px;
 				}
 		</style>
+
+		<script src="vc.js"></script>
+
 		<script>
+
+			if (typeof console == "undefined") {
+				console = { debug : function(){} };
+			} else if (typeof console.debug == "undefined") {
+				console.debug = function(){}
+			}
+
 			function init() {
 				debug("Please do nothing while callibration takes place");
 
+				var doc = document;
+				view.nodes.timer       = doc.getElementById("timer_button");
+				view.nodes.timer_sec   = doc.getElementById("timer_sec");
+				view.nodes.code        = doc.getElementById("code");
+				view.nodes.monitor     = doc.getElementById("monitor_button");
+				view.nodes.nothing     = doc.getElementById("do_nothing_button");
+
 				progress.build();
+
 				timer.callibrate(function(){
 					var debugbox = document.getElementById("debug");
 					debugbox.style.display = "none";
@@ -69,70 +87,8 @@
 					var node = document.getElementById("controls");
 					node.style.display = "block";
 				});
+
 				uline.setbin( document.getElementById("dumpbin") );
-
-				window.do_nothing_button = document.getElementById("do_nothing_button");
-				do_nothing_button.addEventListener("click", do_nothing, false );
-			}
-
-			function monitor_switch(node) {
-					var is = monitor_switch.started
-					if (is) {
-							timer_switch( document.getElementById("timer_button") );
-							progress.stop();
-							node.innerHTML = "Start";
-							monitor_switch.started = false;
-					} else {
-							progress.collect();
-							timer_switch(document.getElementById("timer_button"));
-							node.innerHTML = "Stop";
-							monitor_switch.started = true;
-					}
-			}
-
-			function timer_switch( node ) {
-					var is = timer_switch.started;
-					if (is) {
-							timer.stop();
-							node.innerHTML = "Start";
-							timer_switch.started = false;
-					} else {
-						var sec = document.getElementById("timer_sec").value;
-						if (isNaN(sec)) {
-							timer.collect();                                               
-							node.innerHTML = "Stop";
-							timer_switch.started = true;
-						} else {
-						    node.innerHTML = "No stop";
-						    timer_switch.started = true;
-							timer.collect(Number(sec), function() {
-								timer_switch( node );
-							});
-						}
-					}
-			}
-
-			function flashback_switch(node) {
-				var is = flashback_switch.started;
-				if (is) {
-					timer_switch( document.getElementById("timer_button") );
-					flashback.collect();
-				} else {
-					flashback.stop();
-					timer_switch( document.getElementById("timer_button") );
-				}
-
-				// start timer
-				// start flashback	
-			}
-
-			function do_intercept() {
-					var code = document.getElementById("code");
-					eval( code.value );
-			}
-
-			function do_nothing() {
-				do_nothing_button.innerHTML = do_nothing_button.innerHTML == "do something" ? "Do nothing" : "do something";
 			}
 
 		</script>
@@ -147,13 +103,13 @@
 					because irefox bug with height=2% 
 					-->
 					<div id="progressbox"></div>
-					<div style="margin:2px">Monitor: <button onclick="monitor_switch( this )">Start</button></div>
+					<div style="margin:2px">Monitor: <button id="monitor_button" onclick="controller.swit4('monitor')">Start</button></div>
 				</div>
 
 				<div  style="float:left;">
 					<div class="let">
 						Timer : 
-						<button onclick="timer_switch( this )" id="timer_button">Start</button>
+						<button onclick="controller.swit4('timer')" id="timer_button">Start</button>
 						<button onclick="timer.callibrate()">ReCallibrate</button>
 						<input type="text" id="timer_sec" maxlength="2" style="width:30px"/>
 					</div>
@@ -164,7 +120,7 @@
 					</div>
 					<div class="let">
 						Flashback tool :
-						<button onclick="flashback_switch( this )">Start</button>
+						<button onclick="controller.swit4( 'flashback' )">Start</button>
 						<button onclick="flashback.dump()">Analyse</button>
 					</div>
 				</div>
@@ -180,17 +136,16 @@
 					<textarea id="code" style="width:100%" cols="35" rows="7"> var arr = [];
 
 for (var i=0;i<6099;i++) {
-	var div = document.createElement("div");
-	arr.push( div );
-	}</textarea> 
+    var div = document.createElement("div");
+    arr.push( div );
+}</textarea> 
 <br/>
-					<button onclick="do_intercept()">Execute</button>
-					<button id="do_nothing_button">Do nothing</button>
+					<button onclick="controller.intercept()">Execute</button>
+					<br/>
+					<button id="do_nothing_button" onclick="controller.nothing()">Empty</button>
 					<input type="text" value="dummy input"/>
 					<input type="checkbox" name="some_name"/> One
-
 				</div>
-
 			</div>
 			<div id="debug"></div>
 
