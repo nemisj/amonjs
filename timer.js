@@ -2,7 +2,6 @@ topline    = null;
 bottomline = null;
 stack = [];
 
-
 function debug() {
     var result = '';
     for(var i=0,l=arguments.length;i<l;i++) {
@@ -20,6 +19,10 @@ timer = (typeof timer == "undefined") ? (function(){
 
     var timeout = null;
     var started = false;
+
+    timer.busy = function() {
+        return started; 
+    }
 
     timer.stop = function() {
 

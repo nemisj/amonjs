@@ -2,6 +2,7 @@ progress = (typeof progress == "undefined") ? (function() {
 
     var progress = {};
 
+    var rest   = 0;
     var blocks = [];
 
     var getvalues = function(arr) {
@@ -53,7 +54,6 @@ progress = (typeof progress == "undefined") ? (function() {
     }
 
     progress.do_next = function(height){
-
         var last = blocks.pop();
         blocks.unshift( last );
 
@@ -66,16 +66,15 @@ progress = (typeof progress == "undefined") ? (function() {
 
     progress.do_test = function() {
         var counter = blocks.length;
-        setTimeout(function(){
+        setTimeout(function scope(){
             var r = ~~(Math.random() * 100);
             this.do_next( r );
             if (--counter) {
-                setTimeout(arguments.callee,1000);
+                setTimeout( scope, 1000 );
             }
         },1000);
     }
 
-    var rest = 0;
 
     progress.push = function( arr, time ) {
 
@@ -84,7 +83,7 @@ progress = (typeof progress == "undefined") ? (function() {
         // if result of the arr is bigger than the interval, calculate the rest:
         var result = values.r + rest;
 
-        console.debug('Progress result is',result,'perc',values.p);
+        // console.debug('Progress result is',result,'perc',values.p);
 
         if (result > time) {
             // how much bigger?
@@ -102,10 +101,12 @@ progress = (typeof progress == "undefined") ? (function() {
     }
 
     progress.collect = function() {
+        timer.collect();
         collector.start( progress );
     }
 
     progress.stop = function() {
+        timer.stop();
         collector.stop();
     }
 
@@ -129,8 +130,10 @@ collector = (typeof collector == "undefined" ) ? (function() {
         var t = time;
         interval = setInterval(function() {
             var arr = window.stack;
-            window.stack = [];
-            indicator.push( arr, t );
+            if (arr.length) {
+                window.stack = [];
+                indicator.push( arr, t );
+            }
         }, time);
     }
 

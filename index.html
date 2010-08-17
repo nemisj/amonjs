@@ -77,6 +77,7 @@
 				view.nodes.code        = doc.getElementById("code");
 				view.nodes.monitor     = doc.getElementById("monitor_button");
 				view.nodes.nothing     = doc.getElementById("do_nothing_button");
+				view.nodes.flashback   = doc.getElementById("flashback");
 
 				progress.build();
 
@@ -100,7 +101,7 @@
 
 				<div class="let" style="float:left;">
 					<!-- Monitor should be always above antything, 
-					because irefox bug with height=2% 
+					because firefox has bug height=2% 
 					-->
 					<div id="progressbox"></div>
 					<div style="margin:2px">Monitor: <button id="monitor_button" onclick="controller.swit4('monitor')">Start</button></div>
@@ -120,7 +121,7 @@
 					</div>
 					<div class="let">
 						Flashback tool :
-						<button onclick="controller.swit4( 'flashback' )">Start</button>
+						<button id="flashback" onclick="controller.swit4( 'flashback' )">Start</button>
 						<button onclick="flashback.dump()">Analyse</button>
 					</div>
 				</div>
@@ -154,5 +155,6 @@ for (var i=0;i<6099;i++) {
 			<script src="uline.js"></script>
 			<script src="flashback.js"></script>
 			<script src="popup.js"></script>
+
 		</body>
 </html>

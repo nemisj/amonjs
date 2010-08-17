@@ -26,17 +26,17 @@ flashback = (typeof flashback == "undefined") ? (function() {
     }
 
     flashback.push = function( arr ) {
-        if (arr.length) {
-            stacks.push( arr );
-        }
+        stacks.push( arr );
     }
     
     flashback.collect = function() {
         stacks = [];
+        timer.collect();
         collector.start( this );
     }
 
     flashback.stop = function() {
+        timer.stop();
         collector.stop();
     }
 

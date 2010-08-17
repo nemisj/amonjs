@@ -53,7 +53,6 @@ window.controller = {
         this.state( 'monitor', !is );
 
         if (is) {
-            timer.stop();
             progress.stop();
 
             view.enable('timer');
@@ -61,7 +60,6 @@ window.controller = {
             view.caption('timer','Start');
         } else {
             progress.collect();
-            timer.collect();
 
             view.disable('timer');
             view.caption('timer','Stop');
@@ -109,11 +107,15 @@ window.controller = {
         this.state('flashback', !is);
 
         if (is) {
-            // turn on timer
-            flashback.collect();
-        } else {
             flashback.stop();
-            // turn of timer
+            view.caption("flashback", "Start");
+            view.enable("timer");
+            view.enable("monitor");
+        } else {
+            flashback.collect();
+            view.caption("flashback", "Stop");
+            view.disable("timer");
+            view.disable("monitor");
         }
     }
 }
