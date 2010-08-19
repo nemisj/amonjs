@@ -62,11 +62,23 @@
 
 		<script>
 
+			function debug() {
+				var result = '';
+				for(var i=0,l=arguments.length;i<l;i++) {
+					result += (String(arguments[i]) + ' ');
+				}
+
+				var debugbox = document.getElementById("debug");
+				debugbox.appendChild(document.createTextNode( result ));
+				debugbox.appendChild(document.createElement("br"));
+			}
+
 			if (typeof console == "undefined") {
 				console = { debug : function(){} };
 			} else if (typeof console.debug == "undefined") {
 				console.debug = function(){}
 			}
+
 
 			function init() {
 				debug("Please do nothing while callibration takes place");
@@ -77,7 +89,7 @@
 				view.nodes.code        = doc.getElementById("code");
 				view.nodes.monitor     = doc.getElementById("monitor_button");
 				view.nodes.nothing     = doc.getElementById("do_nothing_button");
-				view.nodes.flashback   = doc.getElementById("flashback");
+				view.nodes.flashback   = doc.getElementById("flashback_button");
 
 				progress.build();
 
@@ -121,7 +133,7 @@
 					</div>
 					<div class="let">
 						Flashback tool :
-						<button id="flashback" onclick="controller.swit4( 'flashback' )">Start</button>
+						<button id="flashback_button" onclick="controller.swit4( 'flashback' )">Start</button>
 						<button onclick="flashback.dump()">Analyse</button>
 					</div>
 				</div>

@@ -1,37 +1,38 @@
 window.view = {
-        nodes : {
-                timer : null,
-                timer_sec : null,
-                monitor : null,
-                code : null,
-                do_nothing_button : null
-        },
-        enable : function(bt) {
-                var node = this.nodes[bt];
-                if (node) {
-                        node.disabled = false;
-                }
-        },
-        disable : function(bt) {
-                var node = this.nodes[bt];
-                if (node) {
-                        node.disabled = true;
-                }
-        },
-        caption : function(bt,str) {
-                var node = this.nodes[bt];
-                if (node) {
-                        node.innerHTML = str;
-                }
-        },
-        value : function(node) {
-                var node = this.nodes[node];
-                return (node) ?  node.value : null;
+    nodes : {
+    timer : null,
+        timer_sec : null,
+        monitor : null,
+        code : null,
+        do_nothing_button : null
+    },
+    enable : function(bt) {
+         var node = this.nodes[bt];
+         if (node) {
+             node.disabled = false;
+         }
+    },
+    disable : function(bt) {
+        var node = this.nodes[bt];
+        if (node) {
+            node.disabled = true;
         }
+    },
+    caption : function(bt,str) {
+        var node = this.nodes[bt];
+        if (node) {
+            node.innerHTML = str;
+        }
+    },
+    value : function(node) {
+        var node = this.nodes[node];
+        return (node) ?  node.value : null;
+    }
 };
 
 window.controller = {
     states : {},
+
     state : function(sys, v) {
         if (v == null) {
             return this.states[sys];

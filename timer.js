@@ -1,17 +1,6 @@
-topline    = null;
-bottomline = null;
-stack = [];
-
-function debug() {
-    var result = '';
-    for(var i=0,l=arguments.length;i<l;i++) {
-        result += (String(arguments[i]) + ' ');
-    }
-
-    var debugbox = document.getElementById("debug");
-    debugbox.appendChild(document.createTextNode( result ));
-    debugbox.appendChild(document.createElement("br"));
-}
+window.topline    = null;
+window.bottomline = null;
+window.stack      = [];
 
 timer = (typeof timer == "undefined") ? (function(){
 
