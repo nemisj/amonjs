@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<style>
+		</style>
+		<script src="progress.js"></script>
+		<script src="timer.js"></script>
+		<script>
+
+			function connect(node,event,fnc) {
+				node[event] = fnc;
+			}
+
+			function disconnect(node,event) {
+				node[event] = null;
+			}
+
+			function init_monitor() {
+				var root = document.createElement("div");
+
+				var style = root.style;
+				style.position = "absolute";
+
+
+				var progressNode = root.appendChild( document.createElement("div") );
+				document.body.appendChild( root );
+
+				connect( progressNode, 'onmousedown', function() {
+					connect( document.body, 'onmousemove', function() {
+						console.debug('move');
+					});
+
+					connect(document.body,'onmouseup', function() {
+						console.debug('end');
+						disconnect( document.body, 'onmouseup' );
+						disconnect( document.body, 'onmousemove' );
+					});
+				});
+
+				progress.build( progressNode );
+
+				var textNode = document.createElement("div");
+
+				var style = textNode.style;
+				style.position = "absolute";
+				style.left  = "2px";
+				style.top   = "2px";
+				style.color = "white";
+				style.fontSize = "10px";
+				style.cursor = "pointer";
+
+				textNode.innerHTML = "Click to Start/Stop";
+				root.appendChild( textNode );
+
+				var running = false;
+				var calibrated =  false;
+
+				connect(textNode,'onclick', function clicker() {
+					if (calibrated) {
+						if (running) {
+							progress.stop();
+							textNode.innerHTML = "Start";
+						} else {
+							progress.collect();
+							textNode.innerHTML = "Stop";
+						}
+						running = !running;
+					} else {
+						textNode.innerHTML = "Calibrating";
+						timer.callibrate(function() {
+							calibrated = true;
+
+							clicker();
+						});
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		Testing embed:
+	</body>
+</html>
