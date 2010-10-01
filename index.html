@@ -2,34 +2,7 @@
 <html>
 		<head>
 		<style>
-				.progressbox {
-					width : 128px;
-					background-color : black;
-					height : 64px;
-					overflow : hidden;
-					margin : 1px;
-				}
-				
-				.progressbox .lead {
-					display : inline-block;
-					width   : 2px;
-					height  : 101%;
-					background-color: black;
-				}
-
-				.progressbox .graphUnit {
-				    display: -moz-inline-stack;
-					display : inline-block;
-					width : 5px;
-					height : 1%;
-					background-color: yellow;
-					margin-right: 2px;
-					padding: 0;
-				}
-
-				.ulinebox {
-				
-				}
+				.ulinebox {}
 
 				.ulinebox .lead {
 					display : inline-block;
@@ -91,7 +64,7 @@
 				view.nodes.nothing     = doc.getElementById("do_nothing_button");
 				view.nodes.flashback   = doc.getElementById("flashback_button");
 
-				progress.build();
+				progress.build( 'progressbox' );
 
 				timer.callibrate(function(){
 					var debugbox = document.getElementById("debug");
