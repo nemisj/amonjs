@@ -39,29 +39,70 @@ progress = (typeof progress == "undefined") ? (function() {
         }
     }
 
-    progress.build  = function() {
-        var container = document.getElementById('progressbox');
-        container.className = "progressbox";
-        container.appendChild(document.createElement("span")).className = "lead";
+    progress.build  = function(node) {
+		var background = "black";
+
+		var container = typeof node == "string" ? document.getElementById( node ) : node;
+
+		var style = container.style;
+		style.backgroundColor = background;
+		style.width = "128px";
+		style.height  = "64px";
+		style.margin = "1px";
+		style.overflow = "hidden";
+		style.position = "relative";
+
+		var leader = container.appendChild(document.createElement("span"));
+
+		var style             = leader.style;
+		style.height          = "100%";
+		style.width           = "2px";
+		style.display         = "inline-block";
+		style.backgroundColor = background;
+
+		var hiding = container.appendChild(document.createElement("div"));
+
+		var style             = hiding.style;
+		style.backgroundColor = background;
+		style.position        = "absolute";
+		style.width           = "100%";
+		style.height          = "1%";
+		style.bottom          = 0;
+
+		var frag = document.createDocumentFragment(),
+			clone = document.createElement("span"),
+			style = clone.style;
+
+		clone.className = "ACM_graphUnit"; 
+
+		style.width       = "5px";
+		style.height      = "1%";
+		style.marginRight = "2px";
+		style.padding     = 0;
+		style.display     = "inline-block";
+		style.backgroundColor = "yellow";
 
         for (var i=0; i<18; i++) {
-            var span = document.createElement("span");
-            span.className = "graphUnit"; 
-            container.appendChild( span );
-            blocks.unshift( span );
+            blocks.unshift( 
+				frag.appendChild( clone.cloneNode(true) ) 
+			);
         }
 
+		container.appendChild( frag );
     }
 
     progress.do_next = function(height){
-        var last = blocks.pop();
+        var last   = blocks.pop(),
+			parent = last.parentNode;
+
         blocks.unshift( last );
 
-        // 1% is not visible, so, add every where +1
-        last.style.height = (++height) + "%"; // to keep showing something;
+		parent.removeChild( last );
 
-        var parent = last.parentNode;
-        parent.appendChild(parent.removeChild(last));
+        // 1% is not visible, so, add every where +1
+		last.style.height = ((height) >= 100 ? 100 : ++height) + "%"; // to keep showing something;
+
+        parent.appendChild( last );
     }
 
     progress.do_test = function() {
