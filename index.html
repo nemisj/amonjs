@@ -81,7 +81,7 @@
 
 
 			function init() {
-				debug("Please do nothing while callibration takes place");
+				debug("Please do nothing while calibration takes place");
 
 				var doc = document;
 				view.nodes.timer       = doc.getElementById("timer_button");
@@ -123,11 +123,11 @@
 					<div class="let">
 						Timer : 
 						<button onclick="controller.swit4('timer')" id="timer_button">Start</button>
-						<button onclick="timer.callibrate()">ReCallibrate</button>
+						<button onclick="timer.callibrate()">Re-Calibrate</button>
 						<input type="text" id="timer_sec" maxlength="2" style="width:30px"/>
 					</div>
 					<div class="let">
-						Ussage dump :
+						Usage dump :
 						<button onclick="uline.dump(stack)">Dump stack</button>
 						<button onclick="uline.clear(stack)">Clear</button>
 					</div>
@@ -159,6 +159,32 @@ for (var i=0;i<6099;i++) {
 					<input type="text" value="dummy input"/>
 					<input type="checkbox" name="some_name"/> One
 				</div>
+				<div class="let">
+					Help  : <br/>
+                    Hi there, this is monitoring tool for the browser activity.
+                    <br/> 
+                    If you are here for the first time, I assume you just would
+                    like to click Start inside the Monitor box and enjoy the
+                    view. <br/>
+                    Start typing in the box, click buttons or resize window and
+                    see how monitor behaves. <br/>
+                    If you are done with that you also can look at the raw
+                    data. <br/>
+                    Stop the monitor and start the Timer <br/>
+                    Now the monitor just collects the data but do not displays
+                    it. Again do some stuff and click "Stop" button in the
+                    Timer box. <br/>
+                    Data is collected, so you can start watching it and
+                    analyzing. Click "Dump stack" button and here you go. Data
+                    is in a raw format together with a graph representing it. 
+                    <br/>
+                    Input box inside the timer gives you possibility to start
+                    the timer for some amount of seconds. After the amount of
+                    seconds have passed it will turn of the timer. ( I use it
+                    to have better time measurement ) <br/>
+                    PS: Sometimes calibration is not working so activiy monitor
+                    is doing wild. Click Re-Calibrate button to fix this stuff.
+                </div>
 			</div>
 			<div id="debug"></div>
 
