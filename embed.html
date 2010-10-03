@@ -1,83 +1,115 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-	<head>
-		<style>
-		</style>
-		<script src="progress.js"></script>
-		<script src="timer.js"></script>
-		<script>
+    <head>
+        <style> </style>
 
-			function connect(node,event,fnc) {
-				node[event] = fnc;
-			}
+        <script src="progress.js"></script>
+        <script src="timer.js"></script>
 
-			function disconnect(node,event) {
-				node[event] = null;
-			}
+        <script>
 
-			function init_monitor() {
-				var root = document.createElement("div");
+            //xxx: do it right
+            function connect(node,event,fnc) {
+                node[event] = fnc;
+            }
 
-				var style = root.style;
-				style.position = "absolute";
+            function disconnect(node,event) {
+                node[event] = null;
+            }
 
+            function apos(node) {
+                var offsetX = 0;
+                var offsetY = 0;
+                var cn = node;
 
-				var progressNode = root.appendChild( document.createElement("div") );
-				document.body.appendChild( root );
+                do {
+                    offsetX += cn.offsetLeft;
+                    offsetY += cn.offsetTop;
+                }while ((cn = cn.parentNode) !=null && cn.nodeName.toLowerCase() != "html");
 
-				connect( progressNode, 'onmousedown', function() {
-					connect( document.body, 'onmousemove', function() {
-						console.debug('move');
-					});
+                return {
+                    left : offsetX,
+                    top  : offsetY
+                };
+            }
 
-					connect(document.body,'onmouseup', function() {
-						console.debug('end');
-						disconnect( document.body, 'onmouseup' );
-						disconnect( document.body, 'onmousemove' );
-					});
-				});
+            function init_monitor() {
+                var root = document.createElement("div");
 
-				progress.build( progressNode );
+                var style = root.style;
+                style.position = "absolute";
 
-				var textNode = document.createElement("div");
+                var progressNode = root.appendChild( document.createElement("div") );
+                document.body.appendChild( root );
 
-				var style = textNode.style;
-				style.position = "absolute";
-				style.left  = "2px";
-				style.top   = "2px";
-				style.color = "white";
-				style.fontSize = "10px";
-				style.cursor = "pointer";
+                connect( root, 'onmousedown', function(e) {
 
-				textNode.innerHTML = "Click to Start/Stop";
-				root.appendChild( textNode );
+                    var mouseLeft = e.clientX;
+                    var mouseTop  = e.clientY;
 
-				var running = false;
-				var calibrated =  false;
+                    var elPos = apos(root);
+                    var oleft = mouseLeft - elPos.left;
+                    var otop = mouseTop  - elPos.top;
 
-				connect(textNode,'onclick', function clicker() {
-					if (calibrated) {
-						if (running) {
-							progress.stop();
-							textNode.innerHTML = "Start";
-						} else {
-							progress.collect();
-							textNode.innerHTML = "Stop";
-						}
-						running = !running;
-					} else {
-						textNode.innerHTML = "Calibrating";
-						timer.callibrate(function() {
-							calibrated = true;
+                    connect( document, 'onmousemove', function(e) {
 
-							clicker();
-						});
-					}
-				});
-			}
-		</script>
-	</head>
-	<body>
-		Testing embed:
-	</body>
+                        var top   = e.clientY,
+                            left  = e.clientX,
+                            style = root.style;
+
+                        style.left = (left - oleft) + "px";
+                        style.top  = (top  - otop ) + "px";
+                    });
+
+                    connect( document,'onmouseup', function() {
+                        disconnect( document, 'onmouseup' );
+                        disconnect( document, 'onmousemove' );
+                    });
+                });
+
+                progress.build( progressNode );
+
+                var textNode = document.createElement("div");
+
+                var style = textNode.style;
+                style.position = "absolute";
+                style.left     = "2px";
+                style.top      = "2px";
+                style.color    = "white";
+                style.fontSize = "10px";
+                style.cursor   = "pointer";
+
+                textNode.innerHTML = "Click to Start";
+                root.appendChild( textNode );
+
+                var running = false;
+                var calibrated =  false;
+
+                connect(textNode,'onclick', function clicker() {
+                    if (calibrated) {
+                        if (running) {
+                            progress.stop();
+                            textNode.innerHTML = "Start";
+                            } else {
+                            progress.collect();
+                            textNode.innerHTML = "Stop";
+                        }
+                        running = !running;
+                        } else {
+                        textNode.innerHTML = "Calibrating";
+                        timer.callibrate(function() {
+                            document.body.appendChild(document.createTextNode("baseline" + topline + " :" + bottomline ));
+                            calibrated = true;
+
+                            clicker();
+                        });
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="init_monitor()">Init monitor</button>
+        Testing embed:
+    </body>
 </html>
